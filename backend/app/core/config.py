@@ -5,6 +5,8 @@ Every environment variable is read here, once. Paths are resolved relative to
 the backend directory, so the app works no matter which directory it starts from.
 """
 
+#read through all the .env
+
 import os
 from functools import lru_cache
 from pathlib import Path

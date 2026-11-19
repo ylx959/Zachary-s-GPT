@@ -196,6 +196,7 @@ Interactive docs: `http://127.0.0.1:8080/docs`
 | GET | `/api/health` | Check that the API is running |
 | GET | `/api/conversations` | List conversations, newest first |
 | GET | `/api/conversations/{thread_id}/messages` | Get a conversation's messages |
+| PATCH | `/api/conversations/{thread_id}` | Rename a conversation (`{"title": "..."}`) |
 | POST | `/api/conversations/{thread_id}/documents` | Upload a document (multipart field `file`, max 20 MB) |
 | POST | `/api/chat/stream` | Send `{"message", "thread_id", "model"}`; streams server-sent events |
 
@@ -219,7 +220,7 @@ ZacharyGPT/
 │   │   │   ├── router.py           # Mounts every route module under /api
 │   │   │   └── routes/
 │   │   │       ├── health.py       # GET  /api/health
-│   │   │       ├── conversations.py# GET  /api/conversations, /api/conversations/{id}/messages
+│   │   │       ├── conversations.py# GET/PATCH /api/conversations, GET /api/conversations/{id}/messages
 │   │   │       ├── documents.py    # POST /api/conversations/{id}/documents
 │   │   │       └── chat.py         # POST /api/chat/stream (SSE)
 │   │   │

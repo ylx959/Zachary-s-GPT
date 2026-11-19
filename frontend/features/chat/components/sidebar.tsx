@@ -4,15 +4,15 @@ import { MagnifyingGlass, Plus, SidebarSimple, X } from "@phosphor-icons/react";
 import { useState } from "react";
 
 import type { Conversation } from "@/lib/api";
-import { formatListTime } from "@/lib/format";
 
-import { Avatar } from "./avatar";
+import { ConversationItem } from "./conversation-item";
 
 type SidebarProps = {
   conversations: Conversation[];
   loaded: boolean;
   activeId: string | null;
   onOpen(threadId: string): void;
+  onRename(threadId: string, title: string): void;
   onNew(): void;
   /** Hides the sidebar. Omitted in the mobile drawer, which closes by tapping outside. */
   onCollapse?(): void;
@@ -21,7 +21,7 @@ type SidebarProps = {
 const roundButton =
   "grid size-9 place-items-center rounded-full border border-line bg-surface text-ink transition hover:bg-selected active:scale-[0.96]";
 
-export function Sidebar({ conversations, loaded, activeId, onOpen, onNew, onCollapse }: SidebarProps) {
+export function Sidebar({ conversations, loaded, activeId, onOpen, onRename, onNew, onCollapse }: SidebarProps) {
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState("");
 
@@ -86,29 +86,16 @@ export function Sidebar({ conversations, loaded, activeId, onOpen, onNew, onColl
           </p>
         ) : (
           <ul className="flex flex-col gap-0.5">
-            {visible.map((conversation) => {
-              const active = conversation.thread_id === activeId;
-              return (
-                <li key={conversation.thread_id}>
-                  <button
-                    type="button"
-                    onClick={() => onOpen(conversation.thread_id)}
-                    aria-current={active ? "page" : undefined}
-                    className={`flex w-full items-center gap-3 rounded-2xl px-2.5 py-2 text-left transition ${
-                      active ? "bg-selected" : "hover:bg-selected/60"
-                    }`}
-                  >
-                    <Avatar label={conversation.title} colorKey={conversation.thread_id} size={38} />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[15px] font-medium">{conversation.title}</span>
-                      <span className="block truncate text-[13px] text-muted">
-                        {formatListTime(conversation.updated_at)}
-                      </span>
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
+            {visible.map((conversation) => (
+              <li key={conversation.thread_id}>
+                <ConversationItem
+                  conversation={conversation}
+                  active={conversation.thread_id === activeId}
+                  onOpen={() => onOpen(conversation.thread_id)}
+                  onRename={(title) => onRename(conversation.thread_id, title)}
+                />
+              </li>
+            ))}
           </ul>
         )}
       </nav>

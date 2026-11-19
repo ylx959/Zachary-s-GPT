@@ -49,6 +49,7 @@ npm run typecheck && npm run lint && npx next build
 - **Read `frontend/AGENTS.md` first.** This is Next.js 16 / React 19 / Tailwind 4, so check `frontend/node_modules/next/dist/docs/` before using Next APIs from memory.
 - **`features/chat/use-chat.ts` is the deep module.** Components under `features/chat/components/` only render props. All chat behaviour lives in `useChat`: streaming, abort, thread ids, history, uploads and localStorage. Add behaviour there, and test it through its interface in `tests/features/chat/use-chat.test.ts`.
 - **`features/chat/use-sidebar.ts` owns the sidebar layout.** It handles drag-resize (220–480 px), snap-to-collapse, keyboard, ⌘B / Ctrl+B and localStorage. `chat-screen.tsx` only applies its width and spreads `handleProps` on the drag handle.
+- **`features/chat/use-typewriter.ts` types answers out on screen.** Gemini streams in large chunks (~100 chars), so `MessageList` reveals the text gradually instead of pasting each chunk in. It types at about 80 chars/s and speeds up to clear any backlog in about 1.2 s. Answers loaded from history and reduced-motion users get the full text at once. Don't "fix" this by changing the backend stream: the backend is already token-level.
 - **Tests live in `frontend/tests/`.** They mirror the source paths (`tests/lib/…`, `tests/features/chat/…`), import via `@/…`, and use `tests/setup.ts` (RTL cleanup).
 - **The Next.js dev indicator is off** (`devIndicators: false` in `next.config.ts`).
 - **`lib/api.ts` is the backend seam.** The `ChatApi` interface has two adapters: `httpChatApi`, and the in-memory fake in tests. Keep it in sync with the backend API table below. SSE parsing is in `lib/sse.ts`.
@@ -74,6 +75,7 @@ app/services/*.py      logic: chat_stream.py (agent run → SSE), documents.py (
 | GET | `/api/health` | Liveness |
 | GET | `/api/conversations` | Conversation list, newest first |
 | GET | `/api/conversations/{thread_id}/messages` | Chat history (empty list for unknown ids) |
+| PATCH | `/api/conversations/{thread_id}` | Rename: `{"title"}` (trimmed, 1–80 chars). 404 if unknown. Titles are only auto-set on creation, so renames stick. |
 | POST | `/api/conversations/{thread_id}/documents` | Multipart `file` upload. 201, or 413/415/422/502 with `{"detail"}`. |
 | POST | `/api/chat/stream` | `{"message","thread_id","model"}` → SSE `{"token"}`… `{"done": true}` (`{"error"}` before done on failure) |
 

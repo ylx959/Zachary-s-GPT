@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import type { ChatMessage } from "../use-chat";
+import { useTypewriter } from "../use-typewriter";
 
 type MessageListProps = {
   messages: ChatMessage[];
@@ -50,21 +51,25 @@ function Message({ message }: { message: ChatMessage }) {
     );
   }
 
-  const streaming = message.status === "streaming";
+  return <AssistantMessage message={message} />;
+}
+
+type AssistantChatMessage = Extract<ChatMessage, { role: "assistant" }>;
+
+function AssistantMessage({ message }: { message: AssistantChatMessage }) {
+  // Only answers that start streaming while on screen are typed out; history shows at once.
+  const shown = useTypewriter(message.content, message.status === "streaming");
+  const writing = message.status === "streaming" || shown.length < message.content.length;
 
   return (
     <div className="flex flex-col items-start gap-2">
-      {message.content && (
-        <div
-          className={`md max-w-[85%] rounded-[18px] bg-bubble px-4 py-2.5 text-[15px] leading-relaxed break-words transition-opacity ${
-            streaming ? "opacity-70" : ""
-          }`}
-        >
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+      {shown && (
+        <div className="md max-w-[85%] rounded-[18px] bg-bubble px-4 py-2.5 text-[15px] leading-relaxed break-words">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{shown}</ReactMarkdown>
         </div>
       )}
-      {streaming && <LiveStatus label={message.content ? "Writing" : "Thinking"} />}
-      {message.status === "error" && (
+      {writing && <LiveStatus label={shown ? "Writing" : "Thinking"} />}
+      {message.status === "error" && !writing && (
         <p role="alert" className="flex items-center gap-1.5 pl-3 text-[13px] text-danger">
           <WarningCircle size={15} />
           {message.error ?? "The answer was cut off."}
@@ -75,16 +80,24 @@ function Message({ message }: { message: ChatMessage }) {
 }
 
 export function MessageList({ messages, stamp }: MessageListProps) {
+  const listRef = useRef<HTMLDivElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
-  const last = messages.at(-1);
 
-  // Follow the conversation as messages arrive and as the answer streams in.
+  // Follow the conversation as messages arrive and as the answer is typed out.
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [messages.length, last?.content]);
+  }, [messages.length]);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => endRef.current?.scrollIntoView({ block: "end" }));
+    observer.observe(list);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="mx-auto flex w-full max-w-[760px] flex-col gap-3.5 px-4 pt-4 pb-6 sm:px-6">
+    <div ref={listRef} className="mx-auto flex w-full max-w-[760px] flex-col gap-3.5 px-4 pt-4 pb-6 sm:px-6">
       {stamp && <p className="pb-1 text-center text-[13px] text-muted">{stamp}</p>}
       {messages.map((message) => (
         <Message key={message.id} message={message} />

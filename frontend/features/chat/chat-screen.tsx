@@ -35,6 +35,7 @@ export function ChatScreen() {
     loaded: chat.conversationsLoaded,
     activeId: chat.threadId,
     onOpen: (threadId: string) => closeMenuThen(() => void chat.openConversation(threadId))(),
+    onRename: (threadId: string, title: string) => void chat.renameConversation(threadId, title),
     onNew: closeMenuThen(chat.newChat),
   };
 
