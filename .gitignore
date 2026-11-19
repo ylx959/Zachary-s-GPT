@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Runtime data (SQLite checkpoints, chat history, vector store)
+/backend/data/
+/backend/chroma_db/

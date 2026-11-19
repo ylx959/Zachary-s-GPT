@@ -37,7 +37,7 @@ jobs:
 
           echo "Building image: $IMAGE_URI"
 
-          docker build -t $IMAGE_URI .
+          docker build -t $IMAGE_URI backend
           docker push $IMAGE_URI
 
   Continuous-Deployment:

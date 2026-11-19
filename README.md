@@ -4,6 +4,14 @@ ZacharyGPT is an open-source **agentic AI chatbot** built with **Python, FastAPI
 
 It supports real-time streaming chat, document uploads, retrieval-augmented generation (RAG), web search, conversation memory, and a simple web UI.
 
+### Tech stack
+
+| Layer | Technology | Location |
+|---|---|---|
+| UI | TypeScript + React / Next.js | `frontend/` |
+| API | Python + FastAPI | `backend/app/main.py` |
+| Agent | Python + LangGraph | `backend/app/agents/` |
+
 ---
 
 ## Highlights
@@ -25,7 +33,7 @@ It supports real-time streaming chat, document uploads, retrieval-augmented gene
 This project combines:
 
 * **FastAPI** for the backend server and API endpoints
-* **Jinja2** for rendering the frontend UI
+* **Next.js + React + TypeScript** for the frontend UI
 * **LangGraph** for agent orchestration
 * **LangChain** for tools, messages, and RAG workflow
 * **Google Gemini** as the LLM provider
@@ -33,6 +41,50 @@ This project combines:
 * **ChromaDB** for vector search over uploaded documents
 * **SQLite** for conversation and persistence
 * **Docker** for containerized deployment
+
+---
+
+## Agent Graph
+
+Every user message goes through the router first, which sends it to one of three branches.
+Each branch is an LLM ⇄ tools loop: the LLM keeps calling tools until it has enough to answer, then the turn ends.
+
+```bash
+                                 __start__
+                                     │
+                                     ▼
+                              ┌─────────────┐
+                              │   router    │   LLM picks: chat / research / coding
+                              └──────┬──────┘
+               ┌─────────────────────┼─────────────────────┐
+             chat                 research               coding
+               │                     │                     │
+               ▼                     ▼                     ▼
+     ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+     │     chatbot      │  │ research subgraph│  │ coding subgraph  │
+     │        ⇅         │  │                  │  │                  │
+     │      tools       │  │    researcher    │  │      coder       │
+     │                  │  │        ⇅         │  │        ⇅         │
+     │                  │  │      tools       │  │      tools       │
+     └─────────┬────────┘  └─────────┬────────┘  └─────────┬────────┘
+               └─────────────────────┼─────────────────────┘
+                                     ▼
+                                  __end__
+
+# Tools available in each branch
+#   chat     : calculator, search_uploaded_documents, remember_this, recall_memory, web_search
+#   research : web_search, search_uploaded_documents
+#   coding   : search_uploaded_documents, web_search, calculator
+```
+
+| Part | File |
+|---|---|
+| Main graph (wiring) | `backend/app/agents/graph.py` |
+| Shared state (`messages`, `route`) | `backend/app/agents/state.py` |
+| Router | `backend/app/agents/router.py` |
+| Research subgraph | `backend/app/agents/subgraphs/research/` |
+| Coding subgraph | `backend/app/agents/subgraphs/coding/` |
+| Tools | `backend/app/tools/` |
 
 ---
 
@@ -64,10 +116,10 @@ Optional for deployment:
 git clone https://github.com/<your-github-username>/ZacharyGPT.git
 ```
 
-### 2. Navigate to the project directory
+### 2. Navigate to the backend directory
 
 ```bash
-cd ZacharyGPT
+cd ZacharyGPT/backend
 ```
 
 ### 3. Install dependencies
@@ -89,11 +141,11 @@ uv remove <package>
 
 ## Environment Variables
 
-Create a `.env` file in the project root directory.
+Create a `.env` file in the `backend/` directory.
 
 ```env
 GOOGLE_API_KEY=your_google_api_key
-GEMINI_MODEL=gemini-2.5-flash
+GEMINI_MODEL=gemini-3.1-flash-lite
 
 TAVILY_API_KEY=your_tavily_api_key
 
@@ -101,6 +153,9 @@ LANGSMITH_TRACING=false
 LANGSMITH_ENDPOINT=https://api.smith.langchain.com
 LANGSMITH_API_KEY=your_langsmith_api_key
 LANGSMITH_PROJECT=zacharygpt
+
+# Origins allowed to call the API (the Next.js frontend), comma-separated
+FRONTEND_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ```
 
 If you do not want to use LangSmith tracing, keep:
@@ -113,17 +168,38 @@ LANGSMITH_TRACING=false
 
 ## Run Locally
 
-Start the FastAPI app:
+Start the FastAPI backend (from `backend/`):
 
 ```bash
+cd backend
 uv run python -m app.main
 ```
 
-The app will be available at:
+In a second terminal, start the Next.js frontend:
 
-```text
-http://127.0.0.1:8080
+```bash
+cd frontend
+npm install
+npm run dev
 ```
+
+Open `http://localhost:3000`. The API runs at `http://127.0.0.1:8080` (interactive docs at `/docs`).
+
+---
+
+## API
+
+Interactive docs: `http://127.0.0.1:8080/docs`
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/api/health` | Check that the API is running |
+| GET | `/api/conversations` | List conversations, newest first |
+| GET | `/api/conversations/{thread_id}/messages` | Get a conversation's messages |
+| POST | `/api/conversations/{thread_id}/documents` | Upload a document (multipart field `file`, max 20 MB) |
+| POST | `/api/chat/stream` | Send `{"message", "thread_id", "model"}`; streams server-sent events |
+
+`/api/chat/stream` emits one JSON object per `data:` line: `{"token": "..."}` for answer text, `{"error": "..."}` on failure, then `{"done": true}`.
 
 ---
 
@@ -132,40 +208,78 @@ http://127.0.0.1:8080
 ```text
 ZacharyGPT/
 │
-├── app/
-│   ├── main.py                 # FastAPI entry point and streaming chat endpoints
+├── backend/                        # API + Agent (Python, managed by uv)
+│   ├── app/
+│   │   ├── main.py                 # create_app(): lifespan, CORS, routers
+│   │   │
+│   │   ├── core/
+│   │   │   └── config.py           # All settings from .env (models, CORS, paths, upload limits, RAG)
+│   │   │
+│   │   ├── api/
+│   │   │   ├── router.py           # Mounts every route module under /api
+│   │   │   └── routes/
+│   │   │       ├── health.py       # GET  /api/health
+│   │   │       ├── conversations.py# GET  /api/conversations, /api/conversations/{id}/messages
+│   │   │       ├── documents.py    # POST /api/conversations/{id}/documents
+│   │   │       └── chat.py         # POST /api/chat/stream (SSE)
+│   │   │
+│   │   ├── schemas/                # Pydantic request/response models
+│   │   │   ├── chat.py
+│   │   │   ├── conversations.py
+│   │   │   └── documents.py
+│   │   │
+│   │   ├── services/
+│   │   │   ├── chat_stream.py      # Runs the agent and turns it into SSE events
+│   │   │   └── documents.py        # Validates, saves and indexes uploads
+│   │   │
+│   │   ├── agents/
+│   │   │   ├── graph.py            # Main graph: router -> chat / research / coding
+│   │   │   ├── state.py            # Shared state (messages + route)
+│   │   │   ├── router.py           # Task routing (LLM classifier)
+│   │   │   └── subgraphs/
+│   │   │       ├── research/       # Research agent: graph.py, state.py, nodes.py
+│   │   │       └── coding/         # Coding agent: graph.py, state.py
+│   │   │
+│   │   ├── tools/
+│   │   │   ├── __init__.py         # Collects all tools into the `tools` list
+│   │   │   ├── context.py          # Reads the conversation id from the run config
+│   │   │   ├── search.py           # Web search tool (Tavily)
+│   │   │   ├── calculator.py       # Math tool
+│   │   │   ├── retrieval.py        # Uploaded-document search tool
+│   │   │   ├── memory.py           # Long-term memory tools (remember / recall)
+│   │   │   └── rag.py              # Embeddings, ingestion, vector search + reranking
+│   │   │
+│   │   ├── memory/
+│   │   │   └── database.py         # Conversation and memory persistence (SQLite)
 │   │
-│   ├── agents/
-│   │   └── graph.py            # Build & compile the LangGraph agent
+│   ├── tests/
+│   │   ├── conftest.py             # Temp storage + test client
+│   │   ├── test_api.py             # API tests (fake agent, no API calls)
+│   │   └── test_agent.py           # Integration test against real Gemini
 │   │
-│   ├── tools/
-│   │   ├── __init__.py         # Collects all tools into the `tools` list
-│   │   ├── context.py          # Current conversation (thread) shared by tools
-│   │   ├── search.py           # Web search tool (Tavily)
-│   │   ├── calculator.py       # Math tool
-│   │   ├── retrieval.py        # Uploaded-document search tool
-│   │   ├── memory.py           # Long-term memory tools (remember / recall)
-│   │   └── rag.py              # Embeddings, ingestion, vector search + reranking
+│   ├── uploads/                    # Uploaded documents
+│   ├── data/                       # SQLite database and LangGraph checkpoints (gitignored)
+│   ├── chroma_db/                  # ChromaDB vector database storage (gitignored)
 │   │
-│   ├── memory/
-│   │   └── database.py         # Conversation and memory persistence (SQLite)
-│   │
-│   └── templates/
-│       └── index.html          # Frontend UI
+│   ├── .env                        # API keys (gitignored)
+│   ├── pyproject.toml              # Project metadata and dependencies (uv)
+│   ├── uv.lock                     # Locked dependency versions
+│   ├── .python-version             # Python version pinned for uv
+│   ├── Dockerfile                  # Backend Docker image
+│   └── .dockerignore               # Docker ignore rules
 │
-├── tests/
-│   └── test_agent.py           # Quick agent smoke test
+├── frontend/                       # UI: Next.js 16 + TypeScript + React 19 + Tailwind 4
+│   ├── app/                        # Layout, page, design tokens (globals.css)
+│   ├── features/chat/
+│   │   ├── use-chat.ts             # Chat state + actions (streaming, uploads, history)
+│   │   ├── chat-screen.tsx         # Composes the screen
+│   │   └── components/             # Sidebar, header, messages, empty state, composer
+│   ├── lib/                        # API client (ChatApi), SSE parser, models, formatting
+│   └── package.json
 │
-├── uploads/                    # Uploaded documents
-├── data/                       # SQLite database and LangGraph checkpoints
-├── chroma_db/                  # ChromaDB vector database storage
-│
-├── .env                        # API keys (gitignored)
-├── pyproject.toml              # Project metadata and dependencies (uv)
-├── uv.lock                     # Locked dependency versions
-├── .python-version             # Python version pinned for uv
-├── Dockerfile                  # Docker image configuration
-└── .dockerignore               # Docker ignore rules
+├── .github/workflows/cicd.yaml     # AWS deploy workflow (manual only)
+├── CLAUDE.md
+└── README.md
 ```
 
 ---
@@ -175,7 +289,7 @@ ZacharyGPT/
 ### 1. Build the Docker image
 
 ```bash
-docker build -t zacharygpt .
+docker build -t zacharygpt backend
 ```
 
 ### 2. Run the Docker container
@@ -185,7 +299,7 @@ docker run -d \
   --name zacharygpt \
   --restart always \
   -p 8080:8080 \
-  --env-file .env \
+  --env-file backend/.env \
   zacharygpt
 ```
 
@@ -342,7 +456,7 @@ Example:
 ```text
 AWS_DEFAULT_REGION=us-east-1
 ECR_REPO=zacharygpt
-GEMINI_MODEL=gemini-2.5-flash
+GEMINI_MODEL=gemini-3.1-flash-lite
 LANGSMITH_TRACING=true
 LANGSMITH_ENDPOINT=https://api.smith.langchain.com
 LANGSMITH_PROJECT=zacharygpt
@@ -371,7 +485,12 @@ This workflow will:
 ## Run Tests
 
 ```bash
-uv run python -m tests.test_agent
+cd backend
+uv run pytest                  # API tests: fake agent and indexer, temp storage, no API calls
+uv run pytest -m integration   # one real agent turn (needs a real GOOGLE_API_KEY)
+
+cd ../frontend
+npm test                       # useChat + SSE parser tests (no server needed)
 ```
 
 ---
