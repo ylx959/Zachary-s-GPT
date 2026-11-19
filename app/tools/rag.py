@@ -16,6 +16,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from pypdf import PdfReader
 import docx2txt
+from flashrank import Ranker, RerankRequest
 
 
 Path("uploads").mkdir(exist_ok=True)
@@ -30,6 +31,55 @@ vectorstore = Chroma(
     embedding_function=embeddings,
     persist_directory="chroma_db"
 )
+
+
+# Reranker (local cross-encoder, no API key needed).
+# MultiBERT is multilingual, so it also handles Chinese documents.
+RERANK_MODEL = os.getenv("RERANK_MODEL", "ms-marco-MultiBERT-L-12")
+RERANK_FETCH_K = int(os.getenv("RERANK_FETCH_K", "20"))  # candidates from vector search
+RERANK_MIN_SCORE = float(os.getenv("RERANK_MIN_SCORE", "0.0"))  # drop chunks below this
+
+_ranker: Ranker | None = None
+
+
+def get_ranker() -> Ranker:
+    """Load the reranker lazily so app startup stays fast."""
+    global _ranker
+    if _ranker is None:
+        cache_dir = Path.home() / ".cache" / "flashrank"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        _ranker = Ranker(model_name=RERANK_MODEL, cache_dir=str(cache_dir))
+    return _ranker
+
+
+def rerank(query: str, docs: List[Document], top_n: int) -> List[Document]:
+    """Reorder docs by cross-encoder relevance and keep the best top_n."""
+    if not docs:
+        return []
+
+    passages = [
+        {"id": i, "text": doc.page_content}
+        for i, doc in enumerate(docs)
+    ]
+
+    try:
+        ranked = get_ranker().rerank(RerankRequest(query=query, passages=passages))
+    except Exception as e:
+        # If the model can't load (e.g. offline first run), fall back to vector order.
+        print(f"[rag] rerank failed, using vector order: {e}")
+        return docs[:top_n]
+
+    results = []
+    for item in ranked:
+        if float(item["score"]) < RERANK_MIN_SCORE:
+            continue
+        doc = docs[item["id"]]
+        doc.metadata["rerank_score"] = float(item["score"])
+        results.append(doc)
+        if len(results) >= top_n:
+            break
+
+    return results
 
 
 
@@ -94,11 +144,15 @@ def add_document_to_rag(file_path: str, thread_id: str):
 
 
 def retrieve_from_rag(query: str, thread_id: str, k: int = 4) -> str:
-    docs = vectorstore.similarity_search(
+    # Stage 1: recall — grab a wider candidate set from the vector store.
+    candidates = vectorstore.similarity_search(
         query,
-        k=k,
+        k=max(k, RERANK_FETCH_K),
         filter={"thread_id": thread_id}
     )
+
+    # Stage 2: precision — rerank candidates and keep the top k.
+    docs = rerank(query, candidates, top_n=k)
 
     if not docs:
         return "No relevant uploaded document content found."
@@ -107,8 +161,10 @@ def retrieve_from_rag(query: str, thread_id: str, k: int = 4) -> str:
 
     for i, doc in enumerate(docs, start=1):
         source = doc.metadata.get("source", "uploaded document")
+        score = doc.metadata.get("rerank_score")
+        score_text = f" | relevance {score:.2f}" if score is not None else ""
         results.append(
-            f"[Source {i}: {source}]\n{doc.page_content}"
+            f"[Source {i}: {source}{score_text}]\n{doc.page_content}"
         )
 
     return "\n\n".join(results)

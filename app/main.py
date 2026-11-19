@@ -23,21 +23,21 @@ from langchain_core.messages import (
     ToolMessage
 )
 
-from agent import get_agent
-from database import (
+from app.agents.graph import get_agent
+from app.memory.database import (
     init_db,
     save_chat_message,
     get_chat_history,
     create_or_update_conversation,
     list_conversations)
 
-from rag import add_document_to_rag
-from tools import set_current_thread_id
+from app.tools.rag import add_document_to_rag
+from app.tools import set_current_thread_id
 
 
 app = FastAPI()
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 
 Path("uploads").mkdir(exist_ok=True)
 Path("data").mkdir(exist_ok=True)
@@ -297,7 +297,7 @@ async def chat_stream(request: Request):
 if __name__ == "__main__":
    
     uvicorn.run(
-        "app:app",
+        "app.main:app",
         host="0.0.0.0",
         port=8080,
         reload=True

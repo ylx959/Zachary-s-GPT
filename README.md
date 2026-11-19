@@ -116,7 +116,7 @@ LANGSMITH_TRACING=false
 Start the FastAPI app:
 
 ```bash
-uv run python app.py
+uv run python -m app.main
 ```
 
 The app will be available at:
@@ -132,23 +132,40 @@ http://127.0.0.1:8080
 ```text
 ZacharyGPT/
 │
-├── app.py                  # FastAPI app and streaming chat endpoints
-├── agent.py                # LangGraph agent setup and tool orchestration
-├── database.py             # Conversation and persistence logic
-├── rag.py                  # Document ingestion and RAG logic
-├── tools.py                # Agent tools such as web search, memory, and RAG
-├── pyproject.toml          # Project metadata and dependencies (uv)
-├── uv.lock                 # Locked dependency versions
-├── .python-version         # Python version pinned for uv
-├── Dockerfile              # Docker image configuration
-├── .dockerignore           # Docker ignore rules
+├── app/
+│   ├── main.py                 # FastAPI entry point and streaming chat endpoints
+│   │
+│   ├── agents/
+│   │   └── graph.py            # Build & compile the LangGraph agent
+│   │
+│   ├── tools/
+│   │   ├── __init__.py         # Collects all tools into the `tools` list
+│   │   ├── context.py          # Current conversation (thread) shared by tools
+│   │   ├── search.py           # Web search tool (Tavily)
+│   │   ├── calculator.py       # Math tool
+│   │   ├── retrieval.py        # Uploaded-document search tool
+│   │   ├── memory.py           # Long-term memory tools (remember / recall)
+│   │   └── rag.py              # Embeddings, ingestion, vector search + reranking
+│   │
+│   ├── memory/
+│   │   └── database.py         # Conversation and memory persistence (SQLite)
+│   │
+│   └── templates/
+│       └── index.html          # Frontend UI
 │
-├── templates/
-│   └── index.html          # Frontend UI
+├── tests/
+│   └── test_agent.py           # Quick agent smoke test
 │
-├── uploads/                # Uploaded documents
-├── data/                   # SQLite database and app data
-└── chroma_db/              # ChromaDB vector database storage
+├── uploads/                    # Uploaded documents
+├── data/                       # SQLite database and LangGraph checkpoints
+├── chroma_db/                  # ChromaDB vector database storage
+│
+├── .env                        # API keys (gitignored)
+├── pyproject.toml              # Project metadata and dependencies (uv)
+├── uv.lock                     # Locked dependency versions
+├── .python-version             # Python version pinned for uv
+├── Dockerfile                  # Docker image configuration
+└── .dockerignore               # Docker ignore rules
 ```
 
 ---
@@ -348,6 +365,14 @@ This workflow will:
 3. Pull the latest image on EC2
 4. Stop the old container
 5. Run the new container
+
+---
+
+## Run Tests
+
+```bash
+uv run python -m tests.test_agent
+```
 
 ---
 
