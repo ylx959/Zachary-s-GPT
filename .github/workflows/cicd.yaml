@@ -1,9 +1,12 @@
 name: Deploy FastAPI Docker Image to EC2
 
+# Auto-deploy on push is disabled until AWS secrets / EC2 runner are set up.
+# Re-enable by restoring the push trigger below.
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
 
 jobs:
   Continuous-Integration:
