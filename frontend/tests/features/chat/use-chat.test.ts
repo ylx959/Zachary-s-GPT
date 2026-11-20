@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { ApiError, type ChatApi, type ChatRequest, type Conversation, type StreamEvent } from "@/lib/api";
+import { ApiError, type ChartSpec, type ChatApi, type ChatRequest, type Conversation, type StreamEvent } from "@/lib/api";
 import { useChat } from "@/features/chat/use-chat";
 
 /** In-memory ChatApi adapter. `stream` scripts what /api/chat/stream would emit. */
@@ -46,6 +46,18 @@ function memoryStorage(initial: Record<string, string> = {}) {
   };
 }
 
+const CHART: ChartSpec = {
+  type: "price",
+  title: "AAPL",
+  subtitle: "Daily close",
+  unit: "currency",
+  dates: ["2026-11-18", "2026-11-19"],
+  series: [{ name: "Close", values: [1, 2], role: "primary" }],
+  volume: [10, 20],
+  stats: [],
+  source: "Alpha Vantage",
+};
+
 let counter = 0;
 const newId = () => `id-${++counter}`;
 
@@ -71,6 +83,28 @@ describe("useChat", () => {
     expect(messages[1]).toMatchObject({ status: "done" });
     expect(requests[0]).toMatchObject({ message: "hi", thread_id: threadId, model: "gemini-3.1-flash-lite" });
     expect(storage.data.get("zgpt.thread")).toBe(threadId);
+  });
+
+  it("attaches tool charts to the assistant message they arrived in", async () => {
+    const { hook } = setup({
+      stream: async function* () {
+        yield { chart: CHART };
+        yield { token: "AAPL is up." };
+        yield { done: true };
+      },
+    });
+
+    await act(() => hook.result.current.send("how is AAPL"));
+
+    expect(hook.result.current.messages[1]).toMatchObject({ role: "assistant", content: "AAPL is up.", charts: [CHART] });
+  });
+
+  it("loads charts saved with history", async () => {
+    const storage = memoryStorage({ "zgpt.thread": "t1" });
+    const { hook } = setup({ getMessages: async () => [{ role: "assistant", content: "", charts: [CHART] }] }, storage);
+
+    await waitFor(() => expect(hook.result.current.messages).toHaveLength(1));
+    expect(hook.result.current.messages[0]).toMatchObject({ charts: [CHART] });
   });
 
   it("keeps the same thread for follow-up messages", async () => {

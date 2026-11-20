@@ -1,6 +1,7 @@
+import json
 from datetime import datetime
 
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
+from sqlalchemy import create_engine, inspect, text, Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 from app.core.config import get_settings
@@ -31,6 +32,12 @@ class ChatMessage(Base):
     thread_id = Column(String, index=True)
     role = Column(String)
     content = Column(Text)
+    # JSON list of chart specs produced by tools during this answer (assistant rows only).
+    charts_json = Column("charts", Text, nullable=True)
+
+    @property
+    def charts(self) -> list[dict]:
+        return json.loads(self.charts_json) if self.charts_json else []
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
@@ -45,6 +52,15 @@ class LongTermMemory(Base):
 
 def init_db():
     Base.metadata.create_all(bind=engine)
+    _add_missing_columns()
+
+
+def _add_missing_columns():
+    """create_all() never alters existing tables; add columns introduced after a DB was created."""
+    columns = {c["name"] for c in inspect(engine).get_columns("chat_messages")}
+    if "charts" not in columns:
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE chat_messages ADD COLUMN charts TEXT"))
 
 
 def create_or_update_conversation(thread_id: str, first_message: str | None = None):
@@ -121,7 +137,7 @@ def list_conversations():
         db.close()
 
 
-def save_chat_message(thread_id: str, role: str, content: str):
+def save_chat_message(thread_id: str, role: str, content: str, charts: list[dict] | None = None):
     db = SessionLocal()
 
     try:
@@ -129,6 +145,7 @@ def save_chat_message(thread_id: str, role: str, content: str):
             thread_id=thread_id,
             role=role,
             content=content,
+            charts_json=json.dumps(charts, ensure_ascii=False) if charts else None,
             created_at=datetime.utcnow()
         )
 

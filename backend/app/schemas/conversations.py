@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, StringConstraints
 
@@ -22,6 +22,8 @@ class MessageOut(BaseModel):
 
     role: Literal["user", "assistant"]
     content: str
+    # Chart specs from tools (see app/tools/finance.py); empty for most messages.
+    charts: list[dict[str, Any]] = []
 
 
 class MessageList(BaseModel):

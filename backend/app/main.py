@@ -18,12 +18,16 @@ from app.api.router import api_router
 from app.memory.database import init_db
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    get_settings().ensure_dirs()
+    settings = get_settings()
+    settings.ensure_dirs()
     init_db()
+    if settings.langsmith_tracing:
+        logger.info("LangSmith tracing ON (project: %s)", settings.langsmith_project)
     yield
 
 

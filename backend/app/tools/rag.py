@@ -10,6 +10,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pypdf import PdfReader
 import docx2txt
 from flashrank import Ranker, RerankRequest
+from langsmith import traceable
 
 
 settings = get_settings()
@@ -43,6 +44,7 @@ def get_ranker() -> Ranker:
     return _ranker
 
 
+@traceable(name="rerank", run_type="chain")
 def rerank(query: str, docs: List[Document], top_n: int) -> List[Document]:
     """Reorder docs by cross-encoder relevance and keep the best top_n."""
     if not docs:
@@ -134,7 +136,22 @@ def add_document_to_rag(file_path: str, thread_id: str):
 
 
 
-def retrieve_from_rag(query: str, thread_id: str, k: int = 4) -> str:
+@traceable(name="retrieve_docs", run_type="retriever")
+def retrieve_docs(
+    query: str,
+    thread_id: str,
+    k: int = 4,
+    use_rerank: bool = True,
+) -> List[Document]:
+    """
+    Return the top-k chunks for a query, scoped to one conversation.
+
+    With use_rerank=False this is plain vector search (the baseline the eval in
+    evals/ compares against).
+    """
+    if not use_rerank:
+        return vectorstore.similarity_search(query, k=k, filter={"thread_id": thread_id})
+
     # Stage 1: recall — grab a wider candidate set from the vector store.
     candidates = vectorstore.similarity_search(
         query,
@@ -143,7 +160,11 @@ def retrieve_from_rag(query: str, thread_id: str, k: int = 4) -> str:
     )
 
     # Stage 2: precision — rerank candidates and keep the top k.
-    docs = rerank(query, candidates, top_n=k)
+    return rerank(query, candidates, top_n=k)
+
+
+def retrieve_from_rag(query: str, thread_id: str, k: int = 4) -> str:
+    docs = retrieve_docs(query, thread_id, k=k)
 
     if not docs:
         return "No relevant uploaded document content found."

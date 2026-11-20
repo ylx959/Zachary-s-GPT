@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 
 import type { ChatMessage } from "../use-chat";
 import { useTypewriter } from "../use-typewriter";
+import { StockChart } from "./stock-chart";
 
 type MessageListProps = {
   messages: ChatMessage[];
@@ -63,6 +64,9 @@ function AssistantMessage({ message }: { message: AssistantChatMessage }) {
 
   return (
     <div className="flex flex-col items-start gap-2">
+      {message.charts.map((chart, i) => (
+        <StockChart key={i} spec={chart} />
+      ))}
       {shown && (
         <div className="md max-w-[85%] rounded-[18px] bg-bubble px-4 py-2.5 text-[15px] leading-relaxed break-words">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{shown}</ReactMarkdown>

@@ -6,7 +6,7 @@ from collections.abc import Iterator
 
 from langchain_core.messages import AIMessage, AIMessageChunk, HumanMessage, ToolMessage
 
-from app.agents.graph import get_agent
+from app.agents.graph import get_agent, normalize_model_name
 from app.memory.database import create_or_update_conversation, save_chat_message
 
 logger = logging.getLogger(__name__)
@@ -14,6 +14,19 @@ logger = logging.getLogger(__name__)
 
 def sse(payload: dict) -> str:
     return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
+
+
+CHART_TYPES = {"price", "compare"}
+
+
+def chart_from(chunk) -> dict | None:
+    """The chart spec a tool attached to its ToolMessage (content_and_artifact), if any."""
+    if not isinstance(chunk, ToolMessage):
+        return None
+    artifact = getattr(chunk, "artifact", None)
+    if isinstance(artifact, dict) and artifact.get("type") in CHART_TYPES:
+        return artifact
+    return None
 
 
 def should_stream_chunk(chunk, metadata: dict | None) -> bool:
@@ -69,6 +82,23 @@ def extract_text(chunk) -> str:
     return ""
 
 
+def run_config(thread_id: str, model: str | None) -> dict:
+    """
+    Config for one agent run.
+
+    run_name, tags and metadata only matter when LangSmith tracing is on:
+    metadata["thread_id"] groups the turns of a conversation into one LangSmith
+    thread, and the model tag lets you filter traces by model.
+    """
+    model_name = normalize_model_name(model)
+    return {
+        "configurable": {"thread_id": thread_id},
+        "run_name": "chat_turn",
+        "tags": ["chat", f"model:{model_name}"],
+        "metadata": {"thread_id": thread_id, "model": model_name},
+    }
+
+
 def stream_chat(message: str, thread_id: str, model: str | None) -> Iterator[str]:
     """
     Yield SSE events for one turn and persist the exchange.
@@ -81,12 +111,20 @@ def stream_chat(message: str, thread_id: str, model: str | None) -> Iterator[str
     save_chat_message(thread_id, "user", message)
 
     agent = get_agent(model)
-    config = {"configurable": {"thread_id": thread_id}}
+    config = run_config(thread_id, model)
     inputs = {"messages": [HumanMessage(content=message)]}
     answer = ""
+    charts: list[dict] = []
 
     try:
         for chunk, metadata in agent.stream(inputs, config=config, stream_mode="messages"):
+            # Tool charts go to the UI as their own event (the tool's text stays hidden).
+            chart = chart_from(chunk)
+            if chart is not None:
+                charts.append(chart)
+                yield sse({"chart": chart})
+                continue
+
             if not should_stream_chunk(chunk, metadata):
                 continue
 
@@ -101,7 +139,7 @@ def stream_chat(message: str, thread_id: str, model: str | None) -> Iterator[str
         yield sse({"error": "The assistant failed to answer. Check the server logs and try again."})
 
     finally:
-        if answer.strip():
-            save_chat_message(thread_id, "assistant", answer)
+        if answer.strip() or charts:
+            save_chat_message(thread_id, "assistant", answer, charts)
 
     yield sse({"done": True})

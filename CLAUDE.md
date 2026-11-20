@@ -27,6 +27,7 @@ uv run python -m app.main            # run the API (http://127.0.0.1:8080, docs 
 uv run pytest                        # API tests (fake agent + indexer, temp storage, no API calls)
 uv run pytest tests/test_api.py::test_health   # a single test
 uv run pytest -m integration         # real Gemini turn (needs a real GOOGLE_API_KEY)
+uv run --group eval python -m evals.rag.run   # RAG eval: vector vs rerankers → evals/rag/results/ (real GOOGLE_API_KEY)
 docker build -t zacharygpt . && docker run -p 8080:8080 --env-file .env zacharygpt   # from backend/
 ```
 
@@ -54,6 +55,7 @@ npm run typecheck && npm run lint && npx next build
 - **The Next.js dev indicator is off** (`devIndicators: false` in `next.config.ts`).
 - **`lib/api.ts` is the backend seam.** The `ChatApi` interface has two adapters: `httpChatApi`, and the in-memory fake in tests. Keep it in sync with the backend API table below. SSE parsing is in `lib/sse.ts`.
 - **Design tokens live in `app/globals.css`.** They're CSS variables on `:root` with a dark-mode block, exposed to Tailwind via `@theme inline` (`bg-sidebar`, `text-muted`, `bg-user-bubble`, …). Use the tokens, not raw hex values. Global element styles go inside `@layer base`, or they beat Tailwind utilities.
+- **Charts render in `features/chat/components/stock-chart.tsx`.** It is a hand-written SVG using the `--chart-*`, `--up` and `--down` tokens, with geometry helpers in `lib/chart.ts`. `useChat` appends `{chart}` events to the streaming assistant message's `charts`.
 - **Keep the model list in sync.** `lib/models.ts` must match `allowed_models` in `backend/app/core/config.py`.
 
 ## Architecture
@@ -74,10 +76,10 @@ app/services/*.py      logic: chat_stream.py (agent run → SSE), documents.py (
 |---|---|---|
 | GET | `/api/health` | Liveness |
 | GET | `/api/conversations` | Conversation list, newest first |
-| GET | `/api/conversations/{thread_id}/messages` | Chat history (empty list for unknown ids) |
+| GET | `/api/conversations/{thread_id}/messages` | Chat history `{"role","content","charts"}` (empty list for unknown ids) |
 | PATCH | `/api/conversations/{thread_id}` | Rename: `{"title"}` (trimmed, 1–80 chars). 404 if unknown. Titles are only auto-set on creation, so renames stick. |
 | POST | `/api/conversations/{thread_id}/documents` | Multipart `file` upload. 201, or 413/415/422/502 with `{"detail"}`. |
-| POST | `/api/chat/stream` | `{"message","thread_id","model"}` → SSE `{"token"}`… `{"done": true}` (`{"error"}` before done on failure) |
+| POST | `/api/chat/stream` | `{"message","thread_id","model"}` → SSE `{"chart"}`/`{"token"}`… `{"done": true}` (`{"error"}` before done on failure) |
 
 - **`/api/chat/stream` is a POST SSE endpoint.** Read it with `fetch` plus a stream reader, not `EventSource`.
 - **`thread_id` format.** It must match `^[A-Za-z0-9_-]+$`; the UIs generate UUIDs.
@@ -102,18 +104,27 @@ START → router → chat     (chatbot ⇄ tools)                      → END
 The UI receives every AI token streamed with `stream_mode="messages"`, except tool messages and tool-call chunks.
 
 - **Hide internal LLM calls.** Any LLM call that is not the final answer (like the router) must be tagged `nostream`, e.g. `.with_config(tags=["nostream"])`, or its output leaks into the chat.
+- **Charts ride on tool artifacts.** A tool declared with `response_format="content_and_artifact"` returns `(text for the LLM, chart spec)`. `chart_from()` turns a `ToolMessage.artifact` whose `type` is in `CHART_TYPES` into an SSE `{"chart"}` event and saves it in `chat_messages.charts` (JSON). The spec's shape is `ChartSpec` in `frontend/lib/chart.ts`; keep it in sync with `app/tools/finance.py`. It works inside subgraphs too.
+- **Trace metadata.** `run_config()` sets `run_name="chat_turn"`, `metadata.thread_id` (LangSmith threads) and a `model:` tag. Tracing itself is switched by `LANGSMITH_TRACING` in `.env`.
 - **Subgraph metadata uses the parent node name.** Inside subgraphs, `metadata["langgraph_node"]` is the parent node name (`research`, `coding`), not `tools`. Filtering there relies on the ToolMessage and `tool_calls` checks.
 
 ### Tools (`app/tools/`)
 
-- **One file per tool group:** `search.py`, `calculator.py`, `retrieval.py`, `memory.py`. `__init__.py` assembles the `tools` list used by the chat branch.
+- **One file per tool group:** `search.py`, `calculator.py`, `retrieval.py`, `memory.py`, `finance.py`. `__init__.py` assembles the `tools` list used by the chat branch.
 - **Conversation ID comes from the run config.** Tools that need the conversation declare a `config: RunnableConfig` parameter (injected by LangChain, hidden from the model) and call `thread_id_from(config)` in `app/tools/context.py`. It reads `configurable.thread_id`, so concurrent requests stay isolated. Never reintroduce a global for this.
-- **`rag.py` is the RAG engine, not a tool.** It reads PDF/DOCX/TXT/MD/PY/CSV and chunks it (900/150) into Chroma (`chroma_db/`), filtered by `thread_id`. Retrieval is two-stage: Chroma returns `RERANK_FETCH_K` (20) candidates, then a local FlashRank cross-encoder (`ms-marco-MultiBERT-L-12`, cached in `~/.cache/flashrank`) reranks them to top k. On reranker failure it falls back to vector order. Tunable via the `RERANK_*` env vars.
+- **`finance.py` uses Alpha Vantage's free tier:** ~25 requests/day and ~1/second, cached 15 min in-process. `OVERVIEW` (fundamentals) is premium on this key, so only `TIME_SERIES_DAILY` (compact, ~100 days) is used. Its tests fake `_fetch`.
+- **`rag.py` is the RAG engine, not a tool.** It reads PDF/DOCX/TXT/MD/PY/CSV and chunks it (900/150) into Chroma (`chroma_db/`), filtered by `thread_id`. `retrieve_docs(..., use_rerank=)` returns Documents (traced as a retriever run). Retrieval is two-stage: Chroma returns `RERANK_FETCH_K` (20) candidates, then a local FlashRank cross-encoder (`ms-marco-MultiBERT-L-12`, cached in `~/.cache/flashrank`) reranks them to top k. On reranker failure it falls back to vector order. Tunable via the `RERANK_*` env vars.
 
 ### Persistence (two separate SQLite stores in `data/`)
 
 - **`langgraph_checkpoints.sqlite`:** the LangGraph checkpointer, holding the graph state per `thread_id`.
 - **`chatbot_memory.db`:** a SQLAlchemy store (`app/memory/database.py`) holding the conversation list and plain chat history for the UI sidebar, plus long-term memories for `remember_this` / `recall_memory`.
+
+### Evals (`backend/evals/<name>/`)
+
+- One folder per eval (`evals/rag/` today). Each has its own data, `run.py`, `results/` (committed) and a gitignored `.cache/`.
+- `evals/rag/run.py` points `CHROMA_DIR` / `DATA_DIR` / `UPLOADS_DIR` at its `.cache/` before importing `app`, so it never touches the app's stores. It reuses `add_document_to_rag` and the same reranking as `retrieve_docs`.
+- Result: on its corpus, the default `ms-marco-MultiBERT-L-12` reranker scores *below* plain vector search (see README). Re-run the eval before changing `RERANK_*` defaults.
 
 `data/`, `chroma_db/` and `uploads/` are runtime data and change whenever the app or tests run. `backend/data/` and `backend/chroma_db/` are gitignored.
 

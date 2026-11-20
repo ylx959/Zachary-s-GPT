@@ -13,12 +13,20 @@
 
 import { useCallback, useEffect, useReducer, useRef } from "react";
 
-import { httpChatApi, type ChatApi, type Conversation, type StoredMessage } from "@/lib/api";
+import { httpChatApi, type ChartSpec, type ChatApi, type Conversation, type StoredMessage } from "@/lib/api";
 import { DEFAULT_MODEL, isModelId, type ModelId } from "@/lib/models";
 
 export type ChatMessage =
   | { id: string; role: "user"; content: string }
-  | { id: string; role: "assistant"; content: string; status: "streaming" | "done" | "error"; error?: string }
+  | {
+      id: string;
+      role: "assistant";
+      content: string;
+      status: "streaming" | "done" | "error";
+      error?: string;
+      /** Charts from tools (e.g. analyze_stock), shown above the answer text. */
+      charts: ChartSpec[];
+    }
   | { id: string; role: "notice"; content: string; tone: "pending" | "info" | "error" };
 
 export type ChatPhase = "idle" | "loading" | "streaming";
@@ -62,6 +70,7 @@ type Action =
   | { type: "reset" }
   | { type: "sent"; threadId: string; user: ChatMessage; assistantId: string }
   | { type: "token"; assistantId: string; token: string }
+  | { type: "chart"; assistantId: string; chart: ChartSpec }
   | { type: "failed"; assistantId: string; error: string }
   | { type: "finished"; assistantId: string }
   | { type: "notice"; threadId: string; notice: Extract<ChatMessage, { role: "notice" }> }
@@ -109,13 +118,18 @@ function reducer(state: ChatState, action: Action): ChatState {
         messages: [
           ...state.messages,
           action.user,
-          { id: action.assistantId, role: "assistant", content: "", status: "streaming" },
+          { id: action.assistantId, role: "assistant", content: "", status: "streaming", charts: [] },
         ],
       };
     case "token":
       return {
         ...state,
         messages: updateAssistant(state.messages, action.assistantId, (m) => ({ ...m, content: m.content + action.token })),
+      };
+    case "chart":
+      return {
+        ...state,
+        messages: updateAssistant(state.messages, action.assistantId, (m) => ({ ...m, charts: [...m.charts, action.chart] })),
       };
     case "failed":
       return {
@@ -147,7 +161,7 @@ function fromStored(messages: StoredMessage[], newId: () => string): ChatMessage
   return messages.map((m) =>
     m.role === "user"
       ? { id: newId(), role: "user", content: m.content }
-      : { id: newId(), role: "assistant", content: m.content, status: "done" },
+      : { id: newId(), role: "assistant", content: m.content, status: "done", charts: m.charts ?? [] },
   );
 }
 
@@ -269,6 +283,7 @@ export function useChat({ api = httpChatApi, storage, newId }: UseChatOptions = 
         const events = runtime.api.streamChat({ message, thread_id: threadId, model: runtime.model }, controller.signal);
         for await (const event of events) {
           if ("token" in event) dispatch({ type: "token", assistantId, token: event.token });
+          else if ("chart" in event) dispatch({ type: "chart", assistantId, chart: event.chart });
           else if ("error" in event) dispatch({ type: "failed", assistantId, error: event.error });
         }
         dispatch({ type: "finished", assistantId });

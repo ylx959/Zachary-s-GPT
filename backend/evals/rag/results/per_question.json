@@ -1,0 +1,990 @@
+[
+  {
+    "id": "hb-01",
+    "question": "How many vacation days do full-time staff get each year?",
+    "evidence": "18 days of paid annual leave",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 659.0,
+      "rerank:ms-marco-MultiBERT-L-12": 630.0,
+      "rerank:ms-marco-MiniLM-L-12-v2": 286.4,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.9
+    }
+  },
+  {
+    "id": "hb-02",
+    "question": "Until when can I use the leave days I didn't take last year?",
+    "evidence": "carried-over days expire on March 31",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 4,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 387.2,
+      "rerank:ms-marco-MultiBERT-L-12": 551.0,
+      "rerank:ms-marco-MiniLM-L-12-v2": 255.1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.7
+    }
+  },
+  {
+    "id": "hb-03",
+    "question": "When do I need to bring a medical certificate if I'm ill?",
+    "evidence": "longer than three consecutive working days",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 10,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 377.2,
+      "rerank:ms-marco-MultiBERT-L-12": 615.9,
+      "rerank:ms-marco-MiniLM-L-12-v2": 292.5,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.4
+    }
+  },
+  {
+    "id": "hb-04",
+    "question": "How much time off does the second parent get after a baby arrives?",
+    "evidence": "Secondary caregivers receive 6 weeks",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 2
+    },
+    "ms": {
+      "vector": 361.6,
+      "rerank:ms-marco-MultiBERT-L-12": 666.8,
+      "rerank:ms-marco-MiniLM-L-12-v2": 285.5,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 16.6
+    }
+  },
+  {
+    "id": "hb-05",
+    "question": "Which weekdays am I expected to come into the office?",
+    "evidence": "Tuesdays and Thursdays are anchor days",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 401.9,
+      "rerank:ms-marco-MultiBERT-L-12": 609.5,
+      "rerank:ms-marco-MiniLM-L-12-v2": 280.1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 16.1
+    }
+  },
+  {
+    "id": "hb-06",
+    "question": "Is there money to buy a desk chair for working from home?",
+    "evidence": "home office stipend of 600 USD",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 373.4,
+      "rerank:ms-marco-MultiBERT-L-12": 644.0,
+      "rerank:ms-marco-MiniLM-L-12-v2": 282.9,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.5
+    }
+  },
+  {
+    "id": "hb-07",
+    "question": "What's the deadline for submitting a receipt for something I bought for work?",
+    "evidence": "within 30 days of the purchase date",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 8,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 4
+    },
+    "ms": {
+      "vector": 480.0,
+      "rerank:ms-marco-MultiBERT-L-12": 555.8,
+      "rerank:ms-marco-MiniLM-L-12-v2": 259.8,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.4
+    }
+  },
+  {
+    "id": "hb-08",
+    "question": "Can I fly business class on a long trip?",
+    "evidence": "flights longer than eight hours",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 9,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 395.2,
+      "rerank:ms-marco-MultiBERT-L-12": 624.4,
+      "rerank:ms-marco-MiniLM-L-12-v2": 238.7,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 13.8
+    }
+  },
+  {
+    "id": "hb-09",
+    "question": "How much can I spend on training courses and conferences per year?",
+    "evidence": "learning budget of 1,200 USD",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 7,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 405.8,
+      "rerank:ms-marco-MultiBERT-L-12": 704.2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 282.3,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.9
+    }
+  },
+  {
+    "id": "hb-10",
+    "question": "When do raises take effect?",
+    "evidence": "take effect on February 1",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 373.8,
+      "rerank:ms-marco-MultiBERT-L-12": 659.0,
+      "rerank:ms-marco-MiniLM-L-12-v2": 272.1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.2
+    }
+  },
+  {
+    "id": "hb-11",
+    "question": "How much notice does a manager have to give when resigning?",
+    "evidence": "two months for managers",
+    "source": "employee_handbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 4,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 377.0,
+      "rerank:ms-marco-MultiBERT-L-12": 647.8,
+      "rerank:ms-marco-MiniLM-L-12-v2": 291.4,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.8
+    }
+  },
+  {
+    "id": "sec-01",
+    "question": "What is the minimum length for my password?",
+    "evidence": "at least 14 characters long",
+    "source": "it_security_policy.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 379.4,
+      "rerank:ms-marco-MultiBERT-L-12": 658.9,
+      "rerank:ms-marco-MiniLM-L-12-v2": 292.9,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.6
+    }
+  },
+  {
+    "id": "sec-02",
+    "question": "Can I use text message codes for two-factor login?",
+    "evidence": "SMS codes are not accepted",
+    "source": "it_security_policy.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 370.4,
+      "rerank:ms-marco-MultiBERT-L-12": 663.9,
+      "rerank:ms-marco-MiniLM-L-12-v2": 297.7,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 16.0
+    }
+  },
+  {
+    "id": "sec-03",
+    "question": "How long after an OS patch comes out do I have to install it?",
+    "evidence": "within 7 days of release",
+    "source": "it_security_policy.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 8,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 398.4,
+      "rerank:ms-marco-MultiBERT-L-12": 622.3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 288.5,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.7
+    }
+  },
+  {
+    "id": "sec-04",
+    "question": "What protocol does the company VPN use?",
+    "evidence": "uses the WireGuard protocol",
+    "source": "it_security_policy.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 456.4,
+      "rerank:ms-marco-MultiBERT-L-12": 644.3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 285.2,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.9
+    }
+  },
+  {
+    "id": "sec-05",
+    "question": "Am I allowed to paste customer personal data into ChatGPT?",
+    "evidence": "pasted into third-party AI tools",
+    "source": "it_security_policy.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 403.4,
+      "rerank:ms-marco-MultiBERT-L-12": 628.0,
+      "rerank:ms-marco-MiniLM-L-12-v2": 305.0,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.1
+    }
+  },
+  {
+    "id": "sec-06",
+    "question": "I clicked a suspicious link in an email. How fast do I have to tell someone?",
+    "evidence": "within one hour of discovery",
+    "source": "it_security_policy.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 2,
+      "rerank:ms-marco-MultiBERT-L-12": 2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 391.5,
+      "rerank:ms-marco-MultiBERT-L-12": 641.0,
+      "rerank:ms-marco-MiniLM-L-12-v2": 295.0,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.9
+    }
+  },
+  {
+    "id": "sec-07",
+    "question": "When does my production access run out?",
+    "evidence": "expires automatically after 90 days",
+    "source": "it_security_policy.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 2,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 361.3,
+      "rerank:ms-marco-MultiBERT-L-12": 522.9,
+      "rerank:ms-marco-MiniLM-L-12-v2": 261.0,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 12.6
+    }
+  },
+  {
+    "id": "sec-08",
+    "question": "How often are the databases backed up and how long are copies kept?",
+    "evidence": "backed up every 6 hours",
+    "source": "it_security_policy.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 394.5,
+      "rerank:ms-marco-MultiBERT-L-12": 626.2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 286.2,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 13.7
+    }
+  },
+  {
+    "id": "x1-01",
+    "question": "How strong is the suction on the cheaper Atlas model?",
+    "evidence": "Suction power: 2,500 Pa",
+    "source": "atlas_x1_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 365.6,
+      "rerank:ms-marco-MultiBERT-L-12": 627.0,
+      "rerank:ms-marco-MiniLM-L-12-v2": 299.2,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.3
+    }
+  },
+  {
+    "id": "x1-02",
+    "question": "Can the Atlas X1 mop floors?",
+    "evidence": "the X1 does not mop",
+    "source": "atlas_x1_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 3,
+      "rerank:ms-marco-MultiBERT-L-12": 2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 367.7,
+      "rerank:ms-marco-MultiBERT-L-12": 619.6,
+      "rerank:ms-marco-MiniLM-L-12-v2": 294.9,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.5
+    }
+  },
+  {
+    "id": "x1-03",
+    "question": "How do I keep the X1 out of the kitchen?",
+    "evidence": "magnetic boundary strip",
+    "source": "atlas_x1_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 389.9,
+      "rerank:ms-marco-MultiBERT-L-12": 625.3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 292.0,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.8
+    }
+  },
+  {
+    "id": "x1-04",
+    "question": "My X1 shows E5, what does it mean?",
+    "evidence": "Error E5 (battery temperature)",
+    "source": "atlas_x1_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 377.0,
+      "rerank:ms-marco-MultiBERT-L-12": 624.2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 291.7,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 13.9
+    }
+  },
+  {
+    "id": "x1-05",
+    "question": "How do I reset the X1 to factory settings?",
+    "evidence": "hold the Home and Spot buttons together for 10 seconds",
+    "source": "atlas_x1_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 4,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 474.7,
+      "rerank:ms-marco-MultiBERT-L-12": 621.8,
+      "rerank:ms-marco-MiniLM-L-12-v2": 292.5,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 13.9
+    }
+  },
+  {
+    "id": "x1-06",
+    "question": "How long is the battery of the entry-level vacuum under warranty?",
+    "evidence": "The battery is covered for 6 months",
+    "source": "atlas_x1_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 2,
+      "rerank:ms-marco-MultiBERT-L-12": null,
+      "rerank:ms-marco-MiniLM-L-12-v2": 4,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 4
+    },
+    "ms": {
+      "vector": 496.6,
+      "rerank:ms-marco-MultiBERT-L-12": 636.7,
+      "rerank:ms-marco-MiniLM-L-12-v2": 298.9,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.6
+    }
+  },
+  {
+    "id": "x2-01",
+    "question": "How big is the water tank on the X2 Pro?",
+    "evidence": "Water tank: 300 ml",
+    "source": "atlas_x2_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 3,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 359.6,
+      "rerank:ms-marco-MultiBERT-L-12": 626.9,
+      "rerank:ms-marco-MiniLM-L-12-v2": 295.3,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.2
+    }
+  },
+  {
+    "id": "x2-02",
+    "question": "Does the flagship robot work with 5 GHz Wi-Fi?",
+    "evidence": "supports both 2.4 GHz and 5 GHz Wi-Fi",
+    "source": "atlas_x2_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 6,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 384.3,
+      "rerank:ms-marco-MultiBERT-L-12": 624.3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 296.9,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 17.0
+    }
+  },
+  {
+    "id": "x2-03",
+    "question": "Will the X2 Pro get my rug wet when it mops?",
+    "evidence": "lifts its mop pad by 7 mm",
+    "source": "atlas_x2_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 2,
+      "rerank:ms-marco-MultiBERT-L-12": 2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 363.0,
+      "rerank:ms-marco-MultiBERT-L-12": 658.2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 302.4,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.7
+    }
+  },
+  {
+    "id": "x2-04",
+    "question": "How often do I need to change the dust bag in the X2 Pro dock?",
+    "evidence": "roughly 60 days of debris",
+    "source": "atlas_x2_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 2,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 354.9,
+      "rerank:ms-marco-MultiBERT-L-12": 672.3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 302.6,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.5
+    }
+  },
+  {
+    "id": "x2-05",
+    "question": "What should I do when the X2 Pro shows error E7?",
+    "evidence": "Error E7 (LiDAR blocked)",
+    "source": "atlas_x2_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 5
+    },
+    "ms": {
+      "vector": 366.5,
+      "rerank:ms-marco-MultiBERT-L-12": 656.3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 317.3,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 17.0
+    }
+  },
+  {
+    "id": "x2-06",
+    "question": "How can I get an extra year of warranty on the X2 Pro?",
+    "evidence": "extends the warranty by one extra year",
+    "source": "atlas_x2_manual.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 367.4,
+      "rerank:ms-marco-MultiBERT-L-12": 655.3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 302.6,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 16.3
+    }
+  },
+  {
+    "id": "eng-01",
+    "question": "How many approvals does a change to the payments code need?",
+    "evidence": "changes to the payments service need two",
+    "source": "engineering_onboarding.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 2,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 387.4,
+      "rerank:ms-marco-MultiBERT-L-12": 643.5,
+      "rerank:ms-marco-MiniLM-L-12-v2": 290.5,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.7
+    }
+  },
+  {
+    "id": "eng-02",
+    "question": "What happens to a CI job that runs for 40 minutes?",
+    "evidence": "jobs that exceed 30 minutes are cancelled",
+    "source": "engineering_onboarding.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 378.2,
+      "rerank:ms-marco-MultiBERT-L-12": 640.8,
+      "rerank:ms-marco-MiniLM-L-12-v2": 284.9,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.3
+    }
+  },
+  {
+    "id": "eng-03",
+    "question": "How is traffic shifted during a production release?",
+    "evidence": "5% of traffic for 15 minutes",
+    "source": "engineering_onboarding.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 376.2,
+      "rerank:ms-marco-MultiBERT-L-12": 639.9,
+      "rerank:ms-marco-MiniLM-L-12-v2": 284.4,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 13.8
+    }
+  },
+  {
+    "id": "eng-04",
+    "question": "Can I ship to production on a Friday afternoon?",
+    "evidence": "not allowed on Fridays after 14:00",
+    "source": "engineering_onboarding.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 10,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 5
+    },
+    "ms": {
+      "vector": 376.3,
+      "rerank:ms-marco-MultiBERT-L-12": 629.2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 277.2,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.6
+    }
+  },
+  {
+    "id": "eng-05",
+    "question": "What do I get paid for a week of being on call?",
+    "evidence": "flat bonus of 400 USD",
+    "source": "engineering_onboarding.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 6,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 388.3,
+      "rerank:ms-marco-MultiBERT-L-12": 634.8,
+      "rerank:ms-marco-MiniLM-L-12-v2": 287.1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.1
+    }
+  },
+  {
+    "id": "eng-06",
+    "question": "How much downtime per month does our API availability target allow?",
+    "evidence": "about 43 minutes of downtime",
+    "source": "engineering_onboarding.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 367.1,
+      "rerank:ms-marco-MultiBERT-L-12": 602.6,
+      "rerank:ms-marco-MiniLM-L-12-v2": 283.5,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 13.8
+    }
+  },
+  {
+    "id": "sup-01",
+    "question": "Who can call support on the phone?",
+    "evidence": "Phone support is offered only to customers with an Atlas Care Plus subscription",
+    "source": "support_playbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 375.7,
+      "rerank:ms-marco-MultiBERT-L-12": 530.2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 246.2,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 13.0
+    }
+  },
+  {
+    "id": "sup-02",
+    "question": "How quickly must we answer a customer whose robot is completely unusable?",
+    "evidence": "P1 (device unusable, safety issue): within 1 hour",
+    "source": "support_playbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 2
+    },
+    "ms": {
+      "vector": 391.7,
+      "rerank:ms-marco-MultiBERT-L-12": 647.8,
+      "rerank:ms-marco-MiniLM-L-12-v2": 299.1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.3
+    }
+  },
+  {
+    "id": "sup-03",
+    "question": "How long does a customer have to send back the broken unit after we ship the replacement?",
+    "evidence": "has 14 days to return the faulty unit",
+    "source": "support_playbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 368.6,
+      "rerank:ms-marco-MultiBERT-L-12": 673.0,
+      "rerank:ms-marco-MiniLM-L-12-v2": 289.0,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 16.8
+    }
+  },
+  {
+    "id": "sup-04",
+    "question": "How much does the extended protection subscription cost?",
+    "evidence": "costs 9 USD per month",
+    "source": "support_playbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 8,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 364.7,
+      "rerank:ms-marco-MultiBERT-L-12": 618.3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 292.2,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.9
+    }
+  },
+  {
+    "id": "sup-05",
+    "question": "Which countries do we deliver to?",
+    "evidence": "ship to Taiwan, Japan, Singapore and Australia",
+    "source": "support_playbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 5,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 2
+    },
+    "ms": {
+      "vector": 399.6,
+      "rerank:ms-marco-MultiBERT-L-12": 613.0,
+      "rerank:ms-marco-MiniLM-L-12-v2": 286.5,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.7
+    }
+  },
+  {
+    "id": "sup-06",
+    "question": "A customer says the battery smells like burning. What do we do?",
+    "evidence": "escalated to the product safety team immediately",
+    "source": "support_playbook.md",
+    "lang": "en",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 2,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 380.2,
+      "rerank:ms-marco-MultiBERT-L-12": 619.6,
+      "rerank:ms-marco-MiniLM-L-12-v2": 283.0,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.1
+    }
+  },
+  {
+    "id": "zh-01",
+    "question": "病假一年最多可以請幾天？",
+    "evidence": "up to 10 days of paid sick leave",
+    "source": "employee_handbook.md",
+    "lang": "zh",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 4,
+      "rerank:ms-marco-MiniLM-L-12-v2": 7,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 9
+    },
+    "ms": {
+      "vector": 386.7,
+      "rerank:ms-marco-MultiBERT-L-12": 610.7,
+      "rerank:ms-marco-MiniLM-L-12-v2": 290.6,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.7
+    }
+  },
+  {
+    "id": "zh-02",
+    "question": "新進員工的試用期多長？",
+    "evidence": "probation period of three months",
+    "source": "employee_handbook.md",
+    "lang": "zh",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": null,
+      "rerank:ms-marco-MiniLM-L-12-v2": 9,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 8
+    },
+    "ms": {
+      "vector": 368.9,
+      "rerank:ms-marco-MultiBERT-L-12": 645.6,
+      "rerank:ms-marco-MiniLM-L-12-v2": 301.2,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 17.5
+    }
+  },
+  {
+    "id": "zh-03",
+    "question": "筆電被偷了要在多久內通報 IT？",
+    "evidence": "reported to IT within 24 hours so the device can be wiped",
+    "source": "it_security_policy.md",
+    "lang": "zh",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 5,
+      "rerank:ms-marco-MiniLM-L-12-v2": 3,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 6
+    },
+    "ms": {
+      "vector": 361.2,
+      "rerank:ms-marco-MultiBERT-L-12": 541.6,
+      "rerank:ms-marco-MiniLM-L-12-v2": 257.0,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 13.9
+    }
+  },
+  {
+    "id": "zh-04",
+    "question": "離職員工的帳號什麼時候會被停用？",
+    "evidence": "disabled on their last working day",
+    "source": "it_security_policy.md",
+    "lang": "zh",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 9,
+      "rerank:ms-marco-MiniLM-L-12-v2": 8,
+      "rerank:ms-marco-TinyBERT-L-2-v2": null
+    },
+    "ms": {
+      "vector": 372.2,
+      "rerank:ms-marco-MultiBERT-L-12": 656.4,
+      "rerank:ms-marco-MiniLM-L-12-v2": 328.2,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.9
+    }
+  },
+  {
+    "id": "zh-05",
+    "question": "X2 Pro 充飽電要多久？",
+    "evidence": "Charging time: about 5.5 hours",
+    "source": "atlas_x2_manual.md",
+    "lang": "zh",
+    "ranks": {
+      "vector": 3,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 2
+    },
+    "ms": {
+      "vector": 361.6,
+      "rerank:ms-marco-MultiBERT-L-12": 620.6,
+      "rerank:ms-marco-MiniLM-L-12-v2": 315.5,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 15.9
+    }
+  },
+  {
+    "id": "zh-06",
+    "question": "X1 的濾網多久要換一次？",
+    "evidence": "replace it every 3 months",
+    "source": "atlas_x1_manual.md",
+    "lang": "zh",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 1,
+      "rerank:ms-marco-MiniLM-L-12-v2": 1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 1
+    },
+    "ms": {
+      "vector": 351.2,
+      "rerank:ms-marco-MultiBERT-L-12": 631.9,
+      "rerank:ms-marco-MiniLM-L-12-v2": 317.1,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 16.2
+    }
+  },
+  {
+    "id": "zh-07",
+    "question": "客人收到機器人後幾天內可以退貨退款？",
+    "evidence": "within 30 days of delivery for a full refund",
+    "source": "support_playbook.md",
+    "lang": "zh",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 7,
+      "rerank:ms-marco-MiniLM-L-12-v2": 8,
+      "rerank:ms-marco-TinyBERT-L-2-v2": null
+    },
+    "ms": {
+      "vector": 360.7,
+      "rerank:ms-marco-MultiBERT-L-12": 648.3,
+      "rerank:ms-marco-MiniLM-L-12-v2": 333.5,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 17.8
+    }
+  },
+  {
+    "id": "zh-08",
+    "question": "重大事故的事後檢討報告要在幾天內發布？",
+    "evidence": "published within 5 working days",
+    "source": "engineering_onboarding.md",
+    "lang": "zh",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 4,
+      "rerank:ms-marco-MiniLM-L-12-v2": null,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 9
+    },
+    "ms": {
+      "vector": 368.5,
+      "rerank:ms-marco-MultiBERT-L-12": 565.7,
+      "rerank:ms-marco-MiniLM-L-12-v2": 269.3,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.4
+    }
+  },
+  {
+    "id": "zh-09",
+    "question": "十二月的程式碼凍結期是哪幾天？",
+    "evidence": "December 20 to January 3",
+    "source": "engineering_onboarding.md",
+    "lang": "zh",
+    "ranks": {
+      "vector": 1,
+      "rerank:ms-marco-MultiBERT-L-12": 6,
+      "rerank:ms-marco-MiniLM-L-12-v2": 4,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 7
+    },
+    "ms": {
+      "vector": 366.1,
+      "rerank:ms-marco-MultiBERT-L-12": 553.0,
+      "rerank:ms-marco-MiniLM-L-12-v2": 267.2,
+      "rerank:ms-marco-TinyBERT-L-2-v2": 14.7
+    }
+  }
+]

@@ -11,9 +11,11 @@ ROUTER_PROMPT = """
 You are a router. Read the recent conversation and pick ONE route for the latest user message.
 
 - research: needs gathering and synthesising information from several sources
-  (in-depth web research, comparing sources, summarising or analysing uploaded documents).
+  (in-depth web research, comparing sources, summarising or analysing uploaded documents,
+  in-depth investment research such as "should I look at NVDA, what's driving it").
 - coding: writing, explaining, reviewing, or debugging code.
 - chat: everything else (small talk, simple questions, quick facts, math,
+  a quick look at one stock's chart or a simple ticker comparison,
   remembering or recalling user info).
 
 When unsure, choose chat.

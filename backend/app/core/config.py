@@ -60,6 +60,14 @@ class Settings(BaseSettings):
     rerank_fetch_k: int = 20
     rerank_min_score: float = 0.0
 
+    # Market data for the investment tools (app/tools/finance.py)
+    alphavantage_api_key: str = ""
+
+    # LangSmith tracing. LangChain reads the LANGSMITH_* variables straight from
+    # os.environ (loaded above); these fields only mirror them for logging.
+    langsmith_tracing: bool = False
+    langsmith_project: str = "zacharygpt"
+
     @field_validator("data_dir", "uploads_dir", "chroma_dir")
     @classmethod
     def _resolve_dir(cls, value: Path) -> Path:

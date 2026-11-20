@@ -66,12 +66,14 @@ def test_chat_streams_only_answer_text_and_persists(client, fake_agent):
     assert response.headers["content-type"].startswith("text/event-stream")
     events = parse_sse(response.text)
     assert events == [{"token": "6 * 7 "}, {"token": "= 42"}, {"done": True}]
-    assert fake_agent.config == {"configurable": {"thread_id": thread}}
+    assert fake_agent.config["configurable"] == {"thread_id": thread}
+    # LangSmith: turns of one conversation group into one thread; a missing model falls back to the default.
+    assert fake_agent.config["metadata"] == {"thread_id": thread, "model": get_settings().gemini_model}
 
     messages = client.get(f"/api/conversations/{thread}/messages").json()["messages"]
     assert messages == [
-        {"role": "user", "content": "what is 6*7"},
-        {"role": "assistant", "content": "6 * 7 = 42"},
+        {"role": "user", "content": "what is 6*7", "charts": []},
+        {"role": "assistant", "content": "6 * 7 = 42", "charts": []},
     ]
 
     threads = [c["thread_id"] for c in client.get("/api/conversations").json()["conversations"]]
@@ -181,3 +183,25 @@ def test_rename_rejects_bad_titles(client, fake_agent, title):
     client.post("/api/chat/stream", json={"message": "hi", "thread_id": thread})
 
     assert client.patch(f"/api/conversations/{thread}", json={"title": title}).status_code == 422
+
+
+CHART = {"type": "price", "title": "AAPL", "dates": ["2026-01-02"], "series": []}
+
+
+class ChartAgent:
+    """A tool returns a chart artifact (as analyze_stock does), then the model answers."""
+
+    def stream(self, inputs, config, stream_mode):
+        yield ToolMessage(content="text for the model only", tool_call_id="1", artifact=CHART), {"langgraph_node": "research"}
+        yield AIMessageChunk(content="AAPL is up."), {"langgraph_node": "research"}
+
+
+def test_tool_chart_is_streamed_and_saved_with_the_answer(client, monkeypatch):
+    monkeypatch.setattr("app.services.chat_stream.get_agent", lambda model=None: ChartAgent())
+    thread = new_thread()
+
+    events = parse_sse(client.post("/api/chat/stream", json={"message": "how is AAPL", "thread_id": thread}).text)
+
+    assert events == [{"chart": CHART}, {"token": "AAPL is up."}, {"done": True}]
+    saved = client.get(f"/api/conversations/{thread}/messages").json()["messages"][-1]
+    assert saved == {"role": "assistant", "content": "AAPL is up.", "charts": [CHART]}

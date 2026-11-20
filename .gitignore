@@ -14,8 +14,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+/backend/lib/
+/backend/lib64/
 parts/
 sdist/
 var/
@@ -221,3 +221,6 @@ __marimo__/
 /backend/data/
 /backend/chroma_db/
 /backend/instruction.md
+
+# RAG eval index cache (rebuilt from evals/corpus)
+/backend/evals/*/.cache/

@@ -16,6 +16,13 @@
   --accent: #3b82f6;
   --live: #34c759;
   --danger: #d93a32;
+  /* Charts (stock-chart.tsx): series colors and gain/loss. */
+  --chart-1: #3b82f6;
+  --chart-2: #f59e0b;
+  --chart-3: #a855f7;
+  --chart-4: #10b981;
+  --up: #15803d;
+  --down: #d93a32;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,6 +41,12 @@
     --accent: #4c8df6;
     --live: #30d158;
     --danger: #ff6961;
+    --chart-1: #4c8df6;
+    --chart-2: #fbbf24;
+    --chart-3: #c084fc;
+    --chart-4: #34d399;
+    --up: #30d158;
+    --down: #ff6961;
   }
 }
 
@@ -52,6 +65,8 @@
   --color-accent: var(--accent);
   --color-live: var(--live);
   --color-danger: var(--danger);
+  --color-up: var(--up);
+  --color-down: var(--down);
   --font-sans: var(--font-geist-sans), "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
